@@ -2,7 +2,7 @@ import { homedir } from "os";
 import { existsSync, readFileSync } from "node:fs";
 import semver from "semver";
 import chalk from "chalk";
-import npmlog from "npmlog";
+import log from "@zctools/log";
 import { program } from "commander";
 import leven from "leven";
 
@@ -15,7 +15,7 @@ const core = function () {
     commandDefaultConfig();
     registerCommand();
   } catch (e) {
-    npmlog.error(e.message);
+    log.error(e.message);
     process.exit(1);
   }
 };
@@ -39,9 +39,13 @@ const commandDefaultConfig = function () {
     .option("-d,--debug", "是否开启调试模式", false);
 
   program.on("option:debug", function () {
-    if (program.debug) {
-      console.log("开启调试模式");
+    if (this.opts().debug) {
+      process.env.LOG_LEVEL = "verbose";
+    } else {
+      process.env.LOG_LEVEL = "info";
     }
+    log.level = process.env.LOG_LEVEL;
+    log.verbose("debug mode launched");
   });
 
   // add some useful into on help
@@ -71,7 +75,7 @@ const registerCommand = function () {
     .command("init <project-name>")
     .description("初始化项目")
     .action(function (projectName) {
-      console.log("init", projectName);
+      log.info("init", projectName);
     });
   program.parse(process.argv);
 };

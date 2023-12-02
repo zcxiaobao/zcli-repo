@@ -17,6 +17,9 @@ importers:
       '@zctools/exec':
         specifier: ^0.0.2
         version: link:../exec
+      '@zctools/log':
+        specifier: ^0.0.2
+        version: link:../../utils/log
       chalk:
         specifier: ^5.3.0
         version: 5.3.0
@@ -48,6 +51,12 @@ importers:
   core/exec: {}
 
   models/command: {}
+
+  utils/log:
+    dependencies:
+      npmlog:
+        specifier: ^7.0.1
+        version: 7.0.1
 
 packages:
 
