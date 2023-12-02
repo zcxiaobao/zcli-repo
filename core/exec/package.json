@@ -10,5 +10,6 @@
   "license": "ISC",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "type": "module"
 }
