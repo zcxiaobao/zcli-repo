@@ -5,6 +5,7 @@ import chalk from "chalk";
 import log from "@zctools/log";
 import { program } from "commander";
 import leven from "leven";
+import initCommand from "@zctools/init";
 
 const pkg = JSON.parse(
   readFileSync(new URL("../package.json", import.meta.url))
@@ -72,11 +73,10 @@ const commandDefaultConfig = function () {
 // 脚手架命令注册
 const registerCommand = function () {
   program
-    .command("init <project-name>")
-    .description("初始化项目")
-    .action(function (projectName) {
-      log.info("init", projectName);
-    });
+    .command("init [project-name]")
+    .description("initialize a new project or component")
+    .option("-f,--force", "是否强制覆盖已存在的文件", false)
+    .action(initCommand);
   program.parse(process.argv);
 };
 

@@ -12,11 +12,20 @@ importers:
         specifier: ^7.1.4
         version: 7.1.4
 
+  commands/init:
+    dependencies:
+      '@zctools/command':
+        specifier: ^0.0.2
+        version: link:../../models/command
+
   core/cli:
     dependencies:
       '@zctools/exec':
         specifier: ^0.0.2
         version: link:../exec
+      '@zctools/init':
+        specifier: ^0.0.2
+        version: link:../../commands/init
       '@zctools/log':
         specifier: ^0.0.2
         version: link:../../utils/log

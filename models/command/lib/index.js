@@ -14,6 +14,7 @@ class Command {
     });
     this.runner = runner;
   }
+  configeEnv() {}
   initArgs() {}
   runProperties() {}
   async runCommand() {
@@ -30,3 +31,5 @@ class Command {
     new Error("execute must be implemented");
   }
 }
+
+export default Command;
