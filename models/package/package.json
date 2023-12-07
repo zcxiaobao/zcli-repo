@@ -13,6 +13,9 @@
   },
   "type": "module",
   "dependencies": {
-    "fs-extra": "^11.2.0"
+    "@zctools/npm-repo-detail": "^0.0.2",
+    "fs-extra": "^11.2.0",
+    "npminstall": "^7.11.1",
+    "pkg-dir": "^8.0.0"
   }
 }
