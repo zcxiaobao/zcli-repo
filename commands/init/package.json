@@ -1,6 +1,6 @@
 {
   "name": "@zctools/init",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -13,6 +13,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@zctools/command": "^0.0.2"
+    "@zctools/command": "^0.0.3"
   }
 }
