@@ -12,16 +12,17 @@ class NpmRepoDetail {
       baseURL: this.registry,
       timeout: 5000,
     });
-    this.service.interceptors.response.use(
-      (response) => {
-        if (response.status === 200) {
-          return response.data;
-        } else {
-          return Promise.reject(response);
-        }
-      },
-      (err) => Promise.reject(err)
-    );
+    // this.service.interceptors.response.use(
+    //   (response) => {
+    //     console.log(response);
+    //     if (response.status === 200) {
+    //       return response.data;
+    //     } else {
+    //       return Promise.reject(response);
+    //     }
+    //   },
+    //   (err) => Promise.reject(err)
+    // );
   }
 
   getDefaultRegistry(isNpm = true) {
@@ -32,7 +33,16 @@ class NpmRepoDetail {
   // 获取 npm repo 详情信息
   getNpmRepoDetail() {
     const registryUrl = urlJoin(this.registry, this.npmName);
-    return this.service.get(registryUrl);
+    return this.service.get(this.npmName).then(
+      (response) => {
+        if (response.status === 200) {
+          return response.data;
+        } else {
+          return Promise.reject(response);
+        }
+      },
+      (err) => Promise.reject(err)
+    );
   }
   // 获取所有版本
   getNpmAllVersions() {

@@ -11,5 +11,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@zctools/package": "^0.0.2",
+    "execa": "^8.0.1"
+  }
 }
