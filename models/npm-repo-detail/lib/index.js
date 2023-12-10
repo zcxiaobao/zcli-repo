@@ -25,14 +25,13 @@ class NpmRepoDetail {
     // );
   }
 
-  getDefaultRegistry(isNpm = true) {
+  getDefaultRegistry(isNpm = false) {
     return isNpm
       ? "https://registry.npmjs.org"
       : "https://registry.npm.taobao.org";
   }
   // 获取 npm repo 详情信息
   getNpmRepoDetail() {
-    const registryUrl = urlJoin(this.registry, this.npmName);
     return this.service.get(this.npmName).then(
       (response) => {
         if (response.status === 200) {
