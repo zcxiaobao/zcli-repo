@@ -39,8 +39,13 @@ const commandDefaultConfig = function () {
     .name(Object.keys(pkg.bin)[0])
     .usage("<command> [options]")
     .version(pkg.version)
-    .option("-d,--debug", "是否开启调试模式", false);
+    .option("-d,--debug", "是否开启调试模式", false)
+    .option("-tp, --targetPath <targetPath>", "是否指定本地调试文件路径", "");
 
+  // 指定targetPath 方便本地调试使用
+  program.on("option:targetPath", function () {
+    process.env.CLI_TARGET_PATH = this.opts().targetPath;
+  });
   program.on("option:debug", function () {
     if (this.opts().debug) {
       process.env.LOG_LEVEL = "verbose";
