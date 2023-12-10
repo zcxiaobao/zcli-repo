@@ -1,5 +1,12 @@
 class Command {
   constructor(argv) {
+    if (!argv) {
+      throw new Error("参数不能为空");
+    }
+    if (!Array.isArray(argv)) {
+      throw new Error("参数必须为数组");
+    }
+    this._argv = argv;
     const runner = new Promise((resolve, reject) => {
       let chain = Promise.resolve();
       chain = chain.then(() => this.configeEnv());
@@ -15,7 +22,10 @@ class Command {
     this.runner = runner;
   }
   configeEnv() {}
-  initArgs() {}
+  initArgs() {
+    this._cmd = this._argv[this._argv.length - 1];
+    this._argv = this._argv.slice(0, -1);
+  }
   runProperties() {}
   async runCommand() {
     const proceed = await this.initialize();
