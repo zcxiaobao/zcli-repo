@@ -1,9 +1,9 @@
 import path from "node:path";
 import Package from "@zctools/package";
-import { execaNode } from "execa";
+import { execa } from "execa";
 import url from "node:url";
 const SETTINGS = {
-  init: "@zctools/cli",
+  init: "@zctools/init",
 };
 
 const exec = async function (...args) {
@@ -12,7 +12,7 @@ const exec = async function (...args) {
   const cmdObj = args[args.length - 1];
   const cmdName = cmdObj.name();
   const packageName = SETTINGS[cmdName];
-  const packageVersion = "0.0.2";
+  const packageVersion = "latest";
 
   let pkg;
   let storeDir = "";
@@ -25,11 +25,11 @@ const exec = async function (...args) {
       packageName,
       packageVersion,
     });
-    // if (await pkg.exists()) {
-    //   await pkg.update();
-    // } else {
-    //   await pkg.install();
-    // }
+    if (await pkg.exists()) {
+      await pkg.update();
+    } else {
+      await pkg.install();
+    }
   } else {
     pkg = new Package({
       targetPath,
@@ -37,10 +37,18 @@ const exec = async function (...args) {
       packageVersion,
     });
   }
+  const cmd = args[args.length - 1];
+  const o = Object.create(null);
+  Object.keys(cmd).forEach((key) => {
+    if (cmd.hasOwnProperty(key) && !key.startsWith("_") && key !== "parent") {
+      o[key] = cmd[key];
+    }
+  });
+  args[args.length - 1] = o;
   const rootFile = await pkg.getRootFilePath();
   if (rootFile) {
     import(url.pathToFileURL(rootFile)).then((module) => {
-      console.log(module, module.default.core);
+      execa("node", ["-e", `${module.default(args)}`]);
     });
   }
 };
