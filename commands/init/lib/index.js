@@ -1,10 +1,12 @@
 import path from "node:path";
 import inquirer from "inquirer";
 import chalk from "chalk";
+import ora from "ora";
 import { pathExistsSync, emptyDirSync } from "fs-extra/esm";
 import validatePackageName from "validate-npm-package-name";
 import log from "@zctools/log";
 import Command from "@zctools/command";
+import Package from "@zctools/package";
 
 import { TEMPLATES, ADD_TYPE_LIST, ADD_TYPE } from "./initDetail.js";
 import {
@@ -23,6 +25,7 @@ class InitCommand extends Command {
   }
   async execute() {
     await this.prepare();
+    await this.downloadTemplate();
     console.log("execute init project");
   }
 
@@ -30,7 +33,6 @@ class InitCommand extends Command {
     await this.generateDirCheck();
     this.projectInfo = await this.getProjectInfo();
   }
-  async downloadTemplate() {}
   async installTemplate() {}
   async successAndInstallRepo() {}
 
@@ -113,6 +115,39 @@ class InitCommand extends Command {
     }
     log.verbose(projectInfo);
     return projectInfo;
+  }
+
+  // 下载模板
+  async downloadTemplate() {
+    const { projectTemplate } = this.projectInfo;
+    const templateInfo = TEMPLATES.find(
+      (item) => item.npmName === projectTemplate
+    );
+    const targetPath = path.resolve(process.env.CLI_HOME_PATH, "termplate");
+    const storeDir = path.resolve(targetPath, "node_modules");
+    const { npmName, version } = templateInfo;
+    this.templateInfo = templateInfo;
+    const templatePkg = new Package({
+      targetPath,
+      storeDir,
+      packageName: npmName,
+      packageVersion: version,
+    });
+
+    if (!(await templatePkg.exists())) {
+      const spinner = ora("正在下载模板...").start();
+      try {
+        await templatePkg.install();
+      } catch (e) {
+        throw e;
+      } finally {
+        spinner.stop();
+        if (await templatePkg.exists()) {
+          this.templatePkg = templatePkg;
+          log.success("模板下载成功");
+        }
+      }
+    }
   }
 
   // 检查项目名称
