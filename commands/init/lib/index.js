@@ -135,7 +135,7 @@ class InitCommand extends Command {
     });
 
     if (!(await templatePkg.exists())) {
-      const spinner = ora("正在下载模板...").start();
+      const spinner = ora(`正在下载模板${npmName}@${version}...`).start();
       try {
         await templatePkg.install();
       } catch (e) {
@@ -145,6 +145,19 @@ class InitCommand extends Command {
         if (await templatePkg.exists()) {
           this.templatePkg = templatePkg;
           log.success("模板下载成功");
+        }
+      }
+    } else {
+      const spinner = ora(`正在更新模板${npmName}@${version}...`).start();
+      try {
+        await templatePkg.update();
+      } catch (e) {
+        throw e;
+      } finally {
+        spinner.stop();
+        if (await templatePkg.exists()) {
+          this.templatePkg = templatePkg;
+          log.success("模板更新成功");
         }
       }
     }
