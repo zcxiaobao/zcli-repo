@@ -2,7 +2,15 @@ import path from "node:path";
 import inquirer from "inquirer";
 import chalk from "chalk";
 import ora from "ora";
-import { pathExistsSync, emptyDirSync } from "fs-extra/esm";
+import { glob } from "glob";
+import ejs from "ejs";
+import {
+  pathExistsSync,
+  emptyDirSync,
+  ensureDirSync,
+  copySync,
+  outputFileSync,
+} from "fs-extra/esm";
 import validatePackageName from "validate-npm-package-name";
 import log from "@zctools/log";
 import Command from "@zctools/command";
@@ -26,15 +34,13 @@ class InitCommand extends Command {
   async execute() {
     await this.prepare();
     await this.downloadTemplate();
-    console.log("execute init project");
+    await this.installTemplate();
   }
 
   async prepare() {
     await this.generateDirCheck();
     this.projectInfo = await this.getProjectInfo();
   }
-  async installTemplate() {}
-  async successAndInstallRepo() {}
 
   // 检查项目目录
   async generateDirCheck() {
@@ -114,6 +120,16 @@ class InitCommand extends Command {
       };
     }
     log.verbose(projectInfo);
+    if (projectInfo.projectName) {
+      projectInfo.className = projectInfo.projectName;
+      projectInfo.name = projectInfo.projectName;
+    }
+    if (projectInfo.projectVersion) {
+      projectInfo.version = projectInfo.projectVersion;
+    }
+    if (projectInfo.componentDescription) {
+      projectInfo.description = projectInfo.componentDescription;
+    }
     return projectInfo;
   }
 
@@ -162,6 +178,63 @@ class InitCommand extends Command {
       }
     }
   }
+
+  // 安装模板
+  async installTemplate() {
+    const rootDir = process.cwd();
+    const installDirPath = path.resolve(rootDir, this.projectInfo.projectName);
+    const templatePath = path.resolve(
+      this.templatePkg.cacheFilePath,
+      "template"
+    );
+    const spinner = ora(`正在安装模板...`).start();
+    try {
+      ensureDirSync(templatePath);
+      ensureDirSync(installDirPath);
+      copySync(templatePath, installDirPath);
+    } catch (e) {
+      log.error(e);
+    } finally {
+      spinner.stop();
+      log.success("模板安装成功");
+    }
+    await this.ejsRender();
+  }
+  // 渲染动态模板
+  async ejsRender() {
+    const { projectName } = this.projectInfo;
+    const templateIgnore = this.templateInfo.ignore || [];
+    const dirPath = path.resolve(process.cwd(), projectName);
+    const ejsRenderIgnore = ["**/node_modules/**", ...templateIgnore];
+    return new Promise(async (resolve, reject) => {
+      try {
+        const files = await glob("**", {
+          cwd: dirPath,
+          ignore: ejsRenderIgnore,
+          nodir: true,
+        });
+        Promise.all(
+          files.map((file) => {
+            const filePath = path.resolve(dirPath, file);
+            return new Promise((resolve1, reject1) => {
+              ejs.renderFile(filePath, this.projectInfo, {}, (err, content) => {
+                if (err) {
+                  reject1(err);
+                }
+                console.log(content);
+                outputFileSync(filePath, content);
+                resolve1(content);
+              });
+            });
+          })
+        ).then(resolve, reject);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+  // 自动安装依赖并启动项目
+  async installRepoAndRun() {}
 
   // 检查项目名称
   checkProjectName() {
