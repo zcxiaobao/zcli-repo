@@ -15,8 +15,8 @@ import validatePackageName from "validate-npm-package-name";
 import log from "@zctools/log";
 import Command from "@zctools/command";
 import Package from "@zctools/package";
-
-import { TEMPLATES, ADD_TYPE_LIST, ADD_TYPE } from "./initDetail.js";
+import execuCommand from "@zctools/command-exec";
+import { TEMPLATES, ADD_TYPE } from "./initDetail.js";
 import {
   typePrompt,
   projectNamePrompt,
@@ -36,6 +36,7 @@ class InitCommand extends Command {
     await this.prepare();
     await this.downloadTemplate();
     await this.installTemplate();
+    await this.installRepoAndRun();
   }
 
   async prepare() {
@@ -222,7 +223,6 @@ class InitCommand extends Command {
                 if (err) {
                   reject1(err);
                 }
-                console.log(content);
                 outputFileSync(filePath, content);
                 resolve1(content);
               });
@@ -242,7 +242,23 @@ class InitCommand extends Command {
     if (!isNeedInstallDepAndRun) {
       createSuccessInfo(this.projectInfo.projectName, "npm");
     }
+    const projectPath = path.resolve(
+      process.cwd(),
+      this.projectInfo.projectName
+    );
     const { installCommand, startCommand } = this.templateInfo;
+    if (installCommand) {
+      const [installCmd, ...args] = installCommand.split(" ");
+      try {
+        await execuCommand(installCmd, args, { cwd: projectPath });
+        if (startCommand) {
+          const [startCmd, ...args] = startCommand.split(" ");
+          await execuCommand(startCmd, args, { cwd: projectPath });
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
   }
 
   // 检查项目名称

@@ -17,6 +17,9 @@ importers:
       '@zctools/command':
         specifier: ^0.0.4
         version: link:../../models/command
+      '@zctools/command-exec':
+        specifier: ^0.0.4
+        version: link:../../utils/command-exec
       '@zctools/log':
         specifier: ^0.0.4
         version: link:../../utils/log

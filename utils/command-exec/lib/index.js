@@ -1,4 +1,4 @@
-import execa from "execa";
+import { execa } from "execa";
 import {
   hasProjectNpm,
   hasProjectYarn,
@@ -25,15 +25,14 @@ export default async (command, args, options) => {
   if (!checkCommand(command, cwd)) {
     throw new Error(`command ${command} not found`);
   }
+  if (args[0] === "install")
+    args.push("--registry=https://registry.npm.taobao.org");
   return new Promise(async (resolve, reject) => {
     try {
-      await execa(
-        command,
-        command === "npm"
-          ? [...args, "--registry=https://registry.npm.taobao.org"]
-          : args,
-        { ...options, stdio: "inherit" }
-      );
+      await execa(command, args, {
+        ...options,
+        stdio: "inherit",
+      });
       resolve(true);
     } catch (e) {
       reject(e);

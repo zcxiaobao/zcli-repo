@@ -1,21 +1,21 @@
 import path from "node:path";
 import fs from "node:fs";
 import { sync as commandExitSync } from "command-exists";
-import LRU from "lru-cache";
+import { LRUCache } from "lru-cache";
 import { execa } from "execa";
 import semver from "semver";
 let _hasPnpm;
 let _hasNpm;
 let _hasYarn;
-const _yarnProjects = new LRU({
+const _yarnProjects = new LRUCache({
   max: 10,
   maxAge: 1000,
 });
-const _pnpmProjects = new LRU({
+const _pnpmProjects = new LRUCache({
   max: 10,
   maxAge: 1000,
 });
-const _npmProjects = new LRU({
+const _npmProjects = new LRUCache({
   max: 10,
   maxAge: 1000,
 });
@@ -25,6 +25,7 @@ const hasYarn = () => {
     return _hasYarn;
   }
   _hasYarn = commandExitSync("yarn");
+  return _hasYarn;
 };
 
 const checkYarn = (result) => {
@@ -49,6 +50,7 @@ const hasPnpm = () => {
     return _hasPnpm;
   }
   _hasPnpm = commandExitSync("pnpm");
+  return _hasPnpm;
 };
 
 const checkPnpm = (result) => {
@@ -73,6 +75,7 @@ const hasNpm = () => {
     return _hasNpm;
   }
   _hasNpm = commandExitSync("npm");
+  return _hasNpm;
 };
 
 const checkNpm = (result) => {
@@ -83,11 +86,11 @@ const checkNpm = (result) => {
 };
 
 export const hasProjectNpm = (cwd) => {
-  if (_pnpmProjects.has(cwd)) {
-    return checkNpm(_pnpmProjects.get(cwd));
+  if (_npmProjects.has(cwd)) {
+    return checkNpm(_npmProjects.get(cwd));
   }
   const lockFile = path.join(cwd, "package.json");
   const result = fs.existsSync(lockFile);
-  _pnpmProjects.set(cwd, result);
+  _npmProjects.set(cwd, result);
   return checkNpm(result);
 };
