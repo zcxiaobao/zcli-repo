@@ -1,0 +1,19 @@
+{
+  "name": "@zctools/package-manager",
+  "version": "0.0.4",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "execa": "^8.0.1",
+    "semver": "^7.5.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module"
+}
