@@ -83,6 +83,13 @@ export const componentDescirptionPrompt = {
   },
 };
 
+export const isNeedInstallDepAndRunPrompt = {
+  type: "confirm",
+  name: "isNeedInstallDepAndRun",
+  message: "是否需要安装依赖并运行项目",
+  default: true,
+};
+
 function createTemplateChoice(template) {
   return template.map((item) => ({
     value: item.npmName,

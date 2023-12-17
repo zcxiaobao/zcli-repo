@@ -23,6 +23,7 @@ import {
   projectVersionPrompt,
   templatePrompt,
   componentDescirptionPrompt,
+  isNeedInstallDepAndRunPrompt,
 } from "./inquirerPrompt.js";
 class InitCommand extends Command {
   initialize() {
@@ -234,7 +235,15 @@ class InitCommand extends Command {
     });
   }
   // 自动安装依赖并启动项目
-  async installRepoAndRun() {}
+  async installRepoAndRun() {
+    const { isNeedInstallDepAndRun } = await inquirer.prompt(
+      isNeedInstallDepAndRunPrompt
+    );
+    if (!isNeedInstallDepAndRun) {
+      createSuccessInfo(this.projectInfo.projectName, "npm");
+    }
+    const { installCommand, startCommand } = this.templateInfo;
+  }
 
   // 检查项目名称
   checkProjectName() {
@@ -248,4 +257,26 @@ class InitCommand extends Command {
 
 export default function (argv) {
   return new InitCommand(argv);
+}
+
+function createSuccessInfo(name, tool) {
+  const END_MSG = `${chalk.blue(
+    "🎉 created project " + chalk.greenBright(name) + " Successfully"
+  )}\n\n 🙏 Thanks for using @zctools/cli !`;
+
+  const BOXEN_CONFIG = {
+    padding: 1,
+    margin: { top: 1, bottom: 1 },
+    borderColor: "cyan",
+    align: "center",
+    borderStyle: "double",
+    title: "🚀 Congratulations",
+    titleAlignment: "center",
+  };
+
+  process.stdout.write(boxen(END_MSG, BOXEN_CONFIG));
+
+  console.log("👉 Get started with the following commands:");
+  console.log(`\n\r\r cd ${chalk.cyan(name)}`);
+  console.log(`\r\r ${template.startCommand} \r\n`);
 }
