@@ -130,9 +130,15 @@ importers:
 
   models/package-manager:
     dependencies:
+      command-exists:
+        specifier: ^1.2.9
+        version: 1.2.9
       execa:
         specifier: ^8.0.1
         version: 8.0.1
+      lru-cache:
+        specifier: ^10.1.0
+        version: 10.1.0
       semver:
         specifier: ^7.5.4
         version: 7.5.4
@@ -1286,6 +1292,10 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
+
+  /command-exists@1.2.9:
+    resolution: {integrity: sha512-LTQ/SGc+s0Xc0Fu5WaKnR0YiygZkm9eKFvyS+fRsU7/ZWFF8ykFM6Pc9aCVf1+xasOOZpO3BAVgVrKvsqKHV7w==}
+    dev: false
 
   /commander@11.1.0:
     resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
