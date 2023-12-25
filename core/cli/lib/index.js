@@ -10,6 +10,8 @@ import exec from "@zctools/exec";
 import dotenv from "dotenv";
 import { pathExists } from "path-exists";
 import constant from "./const.js";
+import ttt from "resolve";
+const { sync: resolveSync } = ttt;
 
 const pkg = JSON.parse(
   readFileSync(new URL("../package.json", import.meta.url))
@@ -84,6 +86,20 @@ const registerCommand = function () {
     .description("initialize a new project or component")
     .option("-f,--force", "是否强制覆盖已存在的文件", false)
     .action(exec);
+  // program.executableDir(
+  //   "C:Program Files\\nodejs\\node_global\\node_modules\\vue"
+  // );
+  // program.executableDir(process.env.NODE_PATH);
+  // console.log(program.executableDir());
+  // console.log(process.env.NODE_PATH);
+  // program.command("install [name]", "install package", {
+  // executableFile: "npm",
+  // "C:\\Program Files\\nodejs\\node_global\\node_modules\\@vue\\cli\\bin\\vue.js",
+  // executableFile: resolveSync("zclis", {
+  //   basedir: "C:Program Files\\nodejs\\node_global\\node_modules",
+  // }),
+  // });
+
   program.parse(process.argv);
 };
 
