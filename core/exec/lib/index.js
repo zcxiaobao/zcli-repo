@@ -4,13 +4,16 @@ import { execa } from "execa";
 import url from "node:url";
 const SETTINGS = {
   init: "@zctools/init",
+  "lint-init": "@zctools/lint",
 };
 
 const exec = async function (...args) {
   const homePath = process.env.CLI_HOME_PATH;
   let targetPath = process.env.CLI_TARGET_PATH;
   const cmdObj = args[args.length - 1];
-  const cmdName = cmdObj.name();
+  const cmdParentName = cmdObj.parent?.name();
+  const cmdName =
+    cmdParentName == "zctools" ? "" : `${cmdParentName}-` + cmdObj.name();
   const packageName = SETTINGS[cmdName];
   const packageVersion = "latest";
 

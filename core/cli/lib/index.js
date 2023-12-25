@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import semver from "semver";
 import chalk from "chalk";
 import log from "@zctools/log";
-import { program } from "commander";
+import { program, Command } from "commander";
 import leven from "leven";
 import exec from "@zctools/exec";
 import dotenv from "dotenv";
@@ -86,6 +86,12 @@ const registerCommand = function () {
     .description("initialize a new project or component")
     .option("-f,--force", "是否强制覆盖已存在的文件", false)
     .action(exec);
+
+  const lint = new Command("lint");
+  lint.command("init").action(exec);
+
+  program.addCommand(lint);
+
   // program.executableDir(
   //   "C:Program Files\\nodejs\\node_global\\node_modules\\vue"
   // );
