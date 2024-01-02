@@ -94,3 +94,15 @@ export const hasProjectNpm = (cwd) => {
   _npmProjects.set(cwd, result);
   return checkNpm(result);
 };
+
+export const getNpmManager = () => {
+  if (hasPnpm()) {
+    return "pnpm";
+  } else if (hasNpm()) {
+    return "npm";
+  } else if (hasYarn()) {
+    return "yarn";
+  } else {
+    throw new Error("no module manger");
+  }
+};

@@ -59,6 +59,9 @@ importers:
       '@zctools/command-exec':
         specifier: ^0.0.4
         version: link:../../utils/command-exec
+      '@zctools/command-exists':
+        specifier: ^0.0.4
+        version: link:../../utils/command-exists
       '@zctools/log':
         specifier: ^0.0.4
         version: link:../../utils/log
