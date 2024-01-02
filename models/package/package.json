@@ -17,5 +17,6 @@
     "fs-extra": "^11.2.0",
     "npminstall": "^7.11.1",
     "pkg-dir": "^8.0.0"
-  }
+  },
+  "gitHead": "ab45b0094bdd3b578605070c920423c1d23621d0"
 }

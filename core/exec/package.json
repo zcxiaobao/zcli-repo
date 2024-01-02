@@ -15,5 +15,6 @@
   "dependencies": {
     "@zctools/package": "^0.0.5",
     "execa": "^8.0.1"
-  }
+  },
+  "gitHead": "ab45b0094bdd3b578605070c920423c1d23621d0"
 }
