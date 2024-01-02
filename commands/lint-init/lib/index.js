@@ -2,13 +2,17 @@ import path from "node:path";
 import fsExtra from "fs-extra";
 import inquirer from "inquirer";
 import Command from "@zctools/command";
-
+import { getNpmManager } from "@zctools/command-exists";
+import execuCommand from "@zctools/command-exec";
+import log from "@zctools/log";
 import {
   eslintTypePrompt,
   markdownlintPrompt,
   stylelintPrompt,
   prettierPrompt,
 } from "./inquirerPrompt.js";
+import { PKG_NAME } from "./lintInitDetail.js";
+import generateTemplate from "./generate-templete.js";
 
 import conflictResolve from "./conflict-resolve.js";
 
@@ -20,13 +24,16 @@ class LintInitCommand extends Command {
     this.config = {};
     this.pkgPath = path.resolve(this.cwd, "package.json");
     this.pkg = fsExtra.readJSONSync(this.pkgPath);
-    this.pkgName = pkg.name;
+    this.pkgName = this.pkg.name;
   }
   async execute() {
     console.log("lint init execute");
     await this.prepare();
     await this.checkConfilct();
     await this.intallLintDep();
+    this.updatePackageJson();
+    this.addCommitHusky();
+    this.writeLintConfig();
     // await this.downloadTemplate();
     // await this.installTemplate();
     // await this.installRepoAndRun();
@@ -41,7 +48,7 @@ class LintInitCommand extends Command {
     this.config.enableStylelint = await chooseEnableStylelint(
       !/node/.test(this.config.eslintType)
     );
-    this.npmManager = "npm";
+    this.npmManager = getNpmManager();
   }
 
   async checkConfilct() {
@@ -52,6 +59,39 @@ class LintInitCommand extends Command {
 
   async intallLintDep() {
     console.log(`Step 6. 安装依赖`);
+    await execuCommand(this.npmManager, ["i", "-D", PKG_NAME], {
+      cwd: this.cwd,
+    });
+    console.log.success("依赖安装成功 :D");
+  }
+  updatePackageJson() {
+    this.pkg = fsExtra.readJSONSync(this.pkgPath);
+    if (!this.pkg.scripts) this.pkg.scripts = {};
+    if (!this.pkg.scripts[`${PKG_NAME}-scan`]) {
+      this.pkg.scripts[`${PKG_NAME}-scan`] = `${PKG_NAME} scan`;
+    }
+    if (!this.pkg.scripts[`${PKG_NAME}-fix`]) {
+      this.pkg.scripts[`${PKG_NAME}-fix`] = `${PKG_NAME} fix`;
+    }
+  }
+
+  addCommitHusky() {
+    log.info(`Step 7. 配置 git commit 卡点`);
+    if (!this.pkg.husky) this.pkg.husky = {};
+    if (!this.pkg.husky.hooks) this.pkg.husky.hooks = {};
+    this.pkg.husky.hooks["pre-commit"] = `${PKG_NAME} commit-file-scan`;
+    this.pkg.husky.hooks["commit-msg"] = `${PKG_NAME} commit-msg-scan`;
+    fsExtra.writeFileSync(pkgPath, JSON.stringify(this.pkg, null, 2));
+    log.success(`Step 7. 配置 git commit 卡点成功 :D`);
+  }
+  writeLintConfig() {
+    log.info(`Step 8. 写入配置文件`);
+    generateTemplate(cwd, this.config);
+    log.success(`Step 8. 写入配置文件成功 :D`);
+
+    // 完成信息
+    const logs = [`${PKG_NAME} 初始化完成 :D`].join("\r\n");
+    log.success(logs);
   }
 }
 

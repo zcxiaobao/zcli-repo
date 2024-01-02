@@ -22,9 +22,9 @@ function checkCommand(command, cwd) {
 
 export default async (command, args, options) => {
   const cwd = options.cwd || process.cwd();
-  if (!checkCommand(command, cwd)) {
-    throw new Error(`command ${command} not found`);
-  }
+  // if (!checkCommand(command, cwd)) {
+  //   throw new Error(`command ${command} not found`);
+  // }
   if (args[0] === "install")
     args.push("--registry=https://registry.npm.taobao.org");
   return new Promise(async (resolve, reject) => {
