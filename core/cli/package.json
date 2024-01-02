@@ -1,6 +1,6 @@
 {
   "name": "@zctools/cli",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "lib/index.js",
   "bin": {
@@ -15,9 +15,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@zctools/exec": "^0.0.4",
-    "@zctools/init": "^0.0.4",
-    "@zctools/log": "^0.0.4",
+    "@zctools/exec": "^0.0.5",
+    "@zctools/init": "^0.0.5",
+    "@zctools/log": "^0.0.5",
     "chalk": "^5.3.0",
     "colors": "^1.4.0",
     "commander": "^11.1.0",

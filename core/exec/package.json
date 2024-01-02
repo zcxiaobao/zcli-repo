@@ -1,6 +1,6 @@
 {
   "name": "@zctools/exec",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@zctools/package": "^0.0.4",
+    "@zctools/package": "^0.0.5",
     "execa": "^8.0.1"
   }
 }

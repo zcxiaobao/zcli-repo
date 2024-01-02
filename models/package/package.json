@@ -1,6 +1,6 @@
 {
   "name": "@zctools/package",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@zctools/npm-repo-detail": "^0.0.4",
+    "@zctools/npm-repo-detail": "^0.0.5",
     "fs-extra": "^11.2.0",
     "npminstall": "^7.11.1",
     "pkg-dir": "^8.0.0"

@@ -1,6 +1,6 @@
 {
   "name": "@zctools/lint-init",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -13,10 +13,10 @@
   },
   "type": "module",
   "dependencies": {
-    "@zctools/command": "^0.0.4",
-    "@zctools/command-exec": "^0.0.4",
-    "@zctools/command-exists": "^0.0.4",
-    "@zctools/log": "^0.0.4",
+    "@zctools/command": "^0.0.5",
+    "@zctools/command-exec": "^0.0.5",
+    "@zctools/command-exists": "^0.0.5",
+    "@zctools/log": "^0.0.5",
     "dirname-filename-esm": "^1.1.1",
     "ejs": "^3.1.9",
     "fs-extra": "^11.2.0",
