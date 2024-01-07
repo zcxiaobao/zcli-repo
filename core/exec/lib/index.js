@@ -13,7 +13,9 @@ const exec = async function (...args) {
   const cmdObj = args[args.length - 1];
   const cmdParentName = cmdObj.parent?.name();
   const cmdName =
-    cmdParentName == "zctools" ? "" : `${cmdParentName}-` + cmdObj.name();
+    cmdParentName == "zctools"
+      ? cmdObj.name()
+      : `${cmdParentName}-` + cmdObj.name();
   const packageName = SETTINGS[cmdName];
   const packageVersion = "latest";
 
