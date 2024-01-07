@@ -89,6 +89,7 @@ const registerCommand = function () {
 
   const lint = new Command("lint");
   lint.command("init").action(exec);
+  lint.command("scan").action(exec);
 
   program.addCommand(lint);
 

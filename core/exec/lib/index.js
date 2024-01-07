@@ -5,6 +5,7 @@ import url from "node:url";
 const SETTINGS = {
   init: "@zctools/init",
   "lint-init": "@zctools/lint",
+  "lint-scan": "@zctools/scan",
 };
 
 const exec = async function (...args) {

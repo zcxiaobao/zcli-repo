@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -15,16 +15,16 @@ importers:
   commands/init:
     dependencies:
       '@zctools/command':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../models/command
       '@zctools/command-exec':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../utils/command-exec
       '@zctools/log':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../utils/log
       '@zctools/package':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../models/package
       chalk:
         specifier: ^5.3.0
@@ -54,16 +54,16 @@ importers:
   commands/lint-init:
     dependencies:
       '@zctools/command':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../models/command
       '@zctools/command-exec':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../utils/command-exec
       '@zctools/command-exists':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../utils/command-exists
       '@zctools/log':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../utils/log
       dirname-filename-esm:
         specifier: ^1.1.1
@@ -81,16 +81,22 @@ importers:
         specifier: ^9.2.12
         version: 9.2.12
 
+  commands/lint-scan:
+    dependencies:
+      '@zctools/command':
+        specifier: ^0.0.6
+        version: link:../../models/command
+
   core/cli:
     dependencies:
       '@zctools/exec':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../exec
       '@zctools/init':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../commands/init
       '@zctools/log':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../utils/log
       chalk:
         specifier: ^5.3.0
@@ -129,7 +135,7 @@ importers:
   core/exec:
     dependencies:
       '@zctools/package':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../../models/package
       execa:
         specifier: ^8.0.1
@@ -152,7 +158,7 @@ importers:
   models/package:
     dependencies:
       '@zctools/npm-repo-detail':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../npm-repo-detail
       fs-extra:
         specifier: ^11.2.0
@@ -182,7 +188,7 @@ importers:
   utils/command-exec:
     dependencies:
       '@zctools/command-exists':
-        specifier: ^0.0.4
+        specifier: ^0.0.6
         version: link:../command-exists
       execa:
         specifier: ^8.0.1
@@ -2237,6 +2243,7 @@ packages:
   /iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
+    requiresBuild: true
     dependencies:
       safer-buffer: 2.1.2
     optional: true
