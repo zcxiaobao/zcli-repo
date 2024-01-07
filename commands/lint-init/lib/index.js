@@ -11,10 +11,12 @@ import {
   stylelintPrompt,
   prettierPrompt,
 } from "./inquirerPrompt.js";
-import { PKG_NAME } from "./lintInitDetail.js";
 import generateTemplate from "./generate-templete.js";
 import generateNeedDep from "./generate-dep.js";
 import conflictResolve from "./conflict-resolve.js";
+
+// 后续等待抽离
+const PKG_NAME = "zctools";
 
 class LintInitCommand extends Command {
   initialize() {
@@ -27,7 +29,6 @@ class LintInitCommand extends Command {
     this.pkgName = this.pkg.name;
   }
   async execute() {
-    console.log("lint init execute");
     await this.prepare();
     await this.checkConfilct();
     await this.intallLintDep();
@@ -56,7 +57,6 @@ class LintInitCommand extends Command {
   async intallLintDep() {
     console.log(`Step 6. 安装依赖`);
     const dep = generateNeedDep(this.config);
-    this.npmManager = "yarn";
     await execuCommand(this.npmManager, ["add", "-D", ...dep], {
       cwd: this.cwd,
     });
@@ -66,10 +66,10 @@ class LintInitCommand extends Command {
     this.pkg = fsExtra.readJSONSync(this.pkgPath);
     if (!this.pkg.scripts) this.pkg.scripts = {};
     if (!this.pkg.scripts[`${PKG_NAME}-scan`]) {
-      this.pkg.scripts[`${PKG_NAME}-scan`] = `${PKG_NAME} scan`;
+      this.pkg.scripts[`${PKG_NAME}-scan`] = `${PKG_NAME} lint scan`;
     }
     if (!this.pkg.scripts[`${PKG_NAME}-fix`]) {
-      this.pkg.scripts[`${PKG_NAME}-fix`] = `${PKG_NAME} fix`;
+      this.pkg.scripts[`${PKG_NAME}-fix`] = `${PKG_NAME} lint fix`;
     }
   }
 
