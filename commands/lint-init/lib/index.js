@@ -13,7 +13,7 @@ import {
 } from "./inquirerPrompt.js";
 import { PKG_NAME } from "./lintInitDetail.js";
 import generateTemplate from "./generate-templete.js";
-
+import generateNeedDep from "./generate-dep.js";
 import conflictResolve from "./conflict-resolve.js";
 
 class LintInitCommand extends Command {
@@ -34,15 +34,11 @@ class LintInitCommand extends Command {
     this.updatePackageJson();
     this.addCommitHusky();
     this.writeLintConfig();
-    // await this.downloadTemplate();
-    // await this.installTemplate();
-    // await this.installRepoAndRun();
   }
 
   async prepare() {
     this.config.enableESLint = true;
-    this.config.enlintType = await chooseEslintType();
-
+    this.config.eslintType = await chooseEslintType();
     this.config.enableMarkdownlint = await chooseEnableMarkdownLint();
     this.config.enablePrettier = await chooseEnablePrettier();
     this.config.enableStylelint = await chooseEnableStylelint(
@@ -53,16 +49,18 @@ class LintInitCommand extends Command {
 
   async checkConfilct() {
     console.log(`Step 5. 检查并处理项目中可能存在的依赖和配置冲突`);
-    this.pkg = conflictResolve(this.cwd);
+    this.pkg = await conflictResolve(this.cwd);
     log.success("已完成项目依赖和配置冲突检查处理");
   }
 
   async intallLintDep() {
     console.log(`Step 6. 安装依赖`);
-    await execuCommand(this.npmManager, ["i", "-D", PKG_NAME], {
+    const dep = generateNeedDep(this.config);
+    this.npmManager = "yarn";
+    await execuCommand(this.npmManager, ["add", "-D", ...dep], {
       cwd: this.cwd,
     });
-    console.log.success("依赖安装成功 :D");
+    log.success("依赖安装成功 :D");
   }
   updatePackageJson() {
     this.pkg = fsExtra.readJSONSync(this.pkgPath);
@@ -81,12 +79,12 @@ class LintInitCommand extends Command {
     if (!this.pkg.husky.hooks) this.pkg.husky.hooks = {};
     this.pkg.husky.hooks["pre-commit"] = `${PKG_NAME} commit-file-scan`;
     this.pkg.husky.hooks["commit-msg"] = `${PKG_NAME} commit-msg-scan`;
-    fsExtra.writeFileSync(pkgPath, JSON.stringify(this.pkg, null, 2));
+    fsExtra.writeFileSync(this.pkgPath, JSON.stringify(this.pkg, null, 2));
     log.success(`Step 7. 配置 git commit 卡点成功 :D`);
   }
   writeLintConfig() {
     log.info(`Step 8. 写入配置文件`);
-    generateTemplate(cwd, this.config);
+    generateTemplate(this.cwd, this.config);
     log.success(`Step 8. 写入配置文件成功 :D`);
 
     // 完成信息

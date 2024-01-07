@@ -11,10 +11,11 @@ import {
 } from "./lintInitDetail.js";
 
 export default (cwd, data, vscode) => {
-  const templatePath = path.resolve(dirname(import.meta.url), "../config");
+  const templatePath = path.resolve(dirname(import.meta), "../config");
   const templates = glob.sync(`${vscode ? "_vscode" : "**"}/*.ejs`, {
     cwd: templatePath,
   });
+  console.log(data);
   for (const name of templates) {
     const filepath = path.resolve(
       cwd,
@@ -32,9 +33,9 @@ export default (cwd, data, vscode) => {
     );
 
     // 合并 vscode config
-    if (/^_vscode/.test(name)) {
-      content = mergeVSCodeConfig(filepath, content);
-    }
+    // if (/^_vscode/.test(name)) {
+    //   content = mergeVSCodeConfig(filepath, content);
+    // }
 
     // 跳过空文件
     if (!content.trim()) continue;
