@@ -17,6 +17,7 @@ import conflictResolve from "./conflict-resolve.js";
 
 // 后续等待抽离
 const PKG_NAME = "zctools";
+const LINT_NAME = "lint";
 
 class LintInitCommand extends Command {
   initialize() {
@@ -65,11 +66,15 @@ class LintInitCommand extends Command {
   updatePackageJson() {
     this.pkg = fsExtra.readJSONSync(this.pkgPath);
     if (!this.pkg.scripts) this.pkg.scripts = {};
-    if (!this.pkg.scripts[`${PKG_NAME}-scan`]) {
-      this.pkg.scripts[`${PKG_NAME}-scan`] = `${PKG_NAME} lint scan`;
+    if (!this.pkg.scripts[`${PKG_NAME}-${LINT_NAME}-scan`]) {
+      this.pkg.scripts[
+        `${PKG_NAME}-${LINT_NAME}-scan`
+      ] = `${PKG_NAME} ${LINT_NAME} scan`;
     }
-    if (!this.pkg.scripts[`${PKG_NAME}-fix`]) {
-      this.pkg.scripts[`${PKG_NAME}-fix`] = `${PKG_NAME} lint fix`;
+    if (!this.pkg.scripts[`${PKG_NAME}-${LINT_NAME}-fix`]) {
+      this.pkg.scripts[
+        `${PKG_NAME}-${LINT_NAME}-fix`
+      ] = `${PKG_NAME} ${LINT_NAME} fix`;
     }
   }
 
@@ -77,8 +82,12 @@ class LintInitCommand extends Command {
     log.info(`Step 7. 配置 git commit 卡点`);
     if (!this.pkg.husky) this.pkg.husky = {};
     if (!this.pkg.husky.hooks) this.pkg.husky.hooks = {};
-    this.pkg.husky.hooks["pre-commit"] = `${PKG_NAME} commit-file-scan`;
-    this.pkg.husky.hooks["commit-msg"] = `${PKG_NAME} commit-msg-scan`;
+    this.pkg.husky.hooks[
+      "pre-commit"
+    ] = `${PKG_NAME} ${LINT_NAME} commit-file-scan`;
+    this.pkg.husky.hooks[
+      "commit-msg"
+    ] = `${PKG_NAME} ${LINT_NAME} commit-msg-scan`;
     fsExtra.writeFileSync(this.pkgPath, JSON.stringify(this.pkg, null, 2));
     log.success(`Step 7. 配置 git commit 卡点成功 :D`);
   }
@@ -88,7 +97,7 @@ class LintInitCommand extends Command {
     log.success(`Step 8. 写入配置文件成功 :D`);
 
     // 完成信息
-    const logs = [`${PKG_NAME} 初始化完成 :D`].join("\r\n");
+    const logs = [`${PKG_NAME}-${LINT_NAME} 初始化完成 :D`].join("\r\n");
     log.success(logs);
   }
 }
