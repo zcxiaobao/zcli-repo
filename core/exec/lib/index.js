@@ -6,6 +6,7 @@ const SETTINGS = {
   init: "@zctools/init",
   "lint-init": "@zctools/lint",
   "lint-scan": "@zctools/scan",
+  "lint-fix": "@zctools/scan",
 };
 
 const exec = async function (...args) {

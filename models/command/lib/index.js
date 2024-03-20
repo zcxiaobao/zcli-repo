@@ -30,15 +30,15 @@ class Command {
   async runCommand() {
     const proceed = await this.initialize();
     if (proceed !== false) {
-      return this.execute();
+      return await this.execute();
     }
-    return undefined;
+    return Promise.reject("err");
   }
   initialize() {
     throw new Error("initialize must be implemented");
   }
   execute() {
-    new Error("execute must be implemented");
+    throw new Error("execute must be implemented");
   }
 }
 

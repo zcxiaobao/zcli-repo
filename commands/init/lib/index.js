@@ -247,17 +247,21 @@ class InitCommand extends Command {
       this.projectInfo.projectName
     );
     const { installCommand, startCommand } = this.templateInfo;
+    let installCmd, installArgs;
     if (installCommand) {
-      const [installCmd, ...args] = installCommand.split(" ");
-      try {
-        await execuCommand(installCmd, args, { cwd: projectPath });
-        if (startCommand) {
-          const [startCmd, ...args] = startCommand.split(" ");
-          await execuCommand(startCmd, args, { cwd: projectPath });
-        }
-      } catch (e) {
-        console.log(e);
+      [installCmd, ...installArgs] = installCommand.split(" ");
+    } else {
+      installCmd = "pnpm";
+      installArgs = ["install"];
+    }
+    try {
+      await execuCommand(installCmd, installArgs, { cwd: projectPath });
+      if (startCommand) {
+        const [startCmd, ...startArgs] = startCommand.split(" ");
+        await execuCommand(startCmd, startArgs, { cwd: projectPath });
       }
+    } catch (e) {
+      console.log(e);
     }
   }
 

@@ -10,8 +10,7 @@ import exec from "@zctools/exec";
 import dotenv from "dotenv";
 import { pathExists } from "path-exists";
 import constant from "./const.js";
-import ttt from "resolve";
-const { sync: resolveSync } = ttt;
+import { getAmendFiles, getCommitFiles } from "@zctools/git-util";
 
 const pkg = JSON.parse(
   readFileSync(new URL("../package.json", import.meta.url))
@@ -89,24 +88,84 @@ const registerCommand = function () {
 
   const lint = new Command("lint");
   lint.command("init").action(exec);
-  lint.command("scan").action(exec);
+  lint
+    .command("scan")
+    .description("一键扫描：对项目进行代码规范问题扫描")
+    .option("-q, --quiet", "仅报告错误信息 - 默认: false")
+    .option("-o, --output-report", "输出扫描出的规范问题日志")
+    .option("-i, --include <dirpath>", "指定要进行规范扫描的目录")
+    .option("--no-ignore", "忽略 eslint 的 ignore 配置文件和 ignore 规则")
+    .action(async (cmd, ...args) => {
+      const cwd = process.cwd();
+      exec(
+        {
+          cwd,
+          fix: false,
+          include: cmd.include || cwd,
+          quiet: Boolean(cmd.quiet),
+          outputReport: Boolean(cmd.outputReport),
+          ignore: cmd.ignore, // 对应 --no-ignore
+        },
+        ...args
+      );
+    });
+
+  lint
+    .command("commit-msg-scan")
+    .description("commit message 检查: git commit 时对 commit message 进行检查")
+    .action(() => {
+      const result = spawn.sync("commitlint", ["-E", "HUSKY_GIT_PARAMS"], {
+        stdio: "inherit",
+      });
+
+      if (result.status !== 0) {
+        process.exit(result.status);
+      }
+    });
+
+  lint
+    .command("commit-file-scan")
+    .description("代码提交检查: git commit 时对提交代码进行规范问题扫描")
+    .option(
+      "-s, --strict",
+      "严格模式，对 warn 和 error 问题都卡口，默认仅对 error 问题卡口"
+    )
+    .action(async (cmd, ...args) => {
+      // git add 检查
+      const files = await getAmendFiles();
+      if (files)
+        log.warn(`exits many changes not staged for commit: \n${files}\n`);
+
+      await exec(
+        {
+          cwd,
+          include: cwd,
+          quiet: !cmd.strict,
+          files: await getCommitFiles(),
+          isCommitLint: true,
+        },
+        ...args
+      );
+    });
+
+  lint
+    .command("fix")
+    .description("一键修复：自动修复项目的代码规范扫描问题")
+    .option("-i, --include <dirpath>", "指定要进行修复扫描的目录")
+    .option("--no-ignore", "忽略 eslint 的 ignore 配置文件和 ignore 规则")
+    .action(async (cmd, ...args) => {
+      await exec(
+        {
+          cwd,
+          fix: true,
+          include: cmd.include || cwd,
+          ignore: cmd.ignore, // 对应 --no-ignore
+        },
+        ...args
+      );
+    });
 
   program.addCommand(lint);
-
-  // program.executableDir(
-  //   "C:Program Files\\nodejs\\node_global\\node_modules\\vue"
-  // );
-  // program.executableDir(process.env.NODE_PATH);
-  // console.log(program.executableDir());
-  // console.log(process.env.NODE_PATH);
-  // program.command("install [name]", "install package", {
-  // executableFile: "npm",
-  // "C:\\Program Files\\nodejs\\node_global\\node_modules\\@vue\\cli\\bin\\vue.js",
-  // executableFile: resolveSync("zclis", {
-  //   basedir: "C:Program Files\\nodejs\\node_global\\node_modules",
-  // }),
-  // });
-
   program.parse(process.argv);
 };
 

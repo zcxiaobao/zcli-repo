@@ -1,5 +1,4 @@
 import axios from "axios";
-import urlJoin from "url-join";
 import semver from "semver";
 class NpmRepoDetail {
   constructor(options) {
@@ -10,7 +9,7 @@ class NpmRepoDetail {
     this.registry = options.registry || this.getDefaultRegistry(options.isNpm);
     this.service = axios.create({
       baseURL: this.registry,
-      timeout: 5000,
+      timeout: 10000,
     });
     // this.service.interceptors.response.use(
     //   (response) => {
@@ -28,7 +27,7 @@ class NpmRepoDetail {
   getDefaultRegistry(isNpm = false) {
     return isNpm
       ? "https://registry.npmjs.org"
-      : "https://registry.npm.taobao.org";
+      : "https://registry.npmmirror.com";
   }
   // 获取 npm repo 详情信息
   getNpmRepoDetail() {

@@ -26,7 +26,7 @@ export default async (command, args, options) => {
   //   throw new Error(`command ${command} not found`);
   // }
   if (args[0] === "install")
-    args.push("--registry=https://registry.npm.taobao.org");
+    args.push("--registry=https://registry.npmmirror.com");
   return new Promise(async (resolve, reject) => {
     try {
       await execa(command, args, {
